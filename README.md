@@ -1,92 +1,88 @@
-# Obsidian Sample Plugin
+# Obsidian Dashboard Plugin v3
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+完整仪表盘插件，包含全部功能。
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## 新增功能（v3）
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
+| 功能 | 说明 |
+|------|------|
+| **双击重命名** | 置顶区文件名双击进入内联编辑，Enter 确认，Escape 取消，调用 `fileManager.renameFile` 同步 Vault |
+| **拖拽排序置顶** | 置顶列表支持 HTML5 原生拖拽，拖放后立即持久化顺序到 `data.json` |
+| **Dataview 统计** | 主面板顶部 6 张统计卡：总文件数、置顶数、字数估算、标签总数、最大分类、平均修改间隔 |
+| **侧边栏 Tab** | 注册独立 `VIEW_TYPE_SIDE` Leaf，嵌入 Obsidian 左侧边栏；含导航（分类/置顶/标签）和统计（进度条+Top8标签）两个 Tab |
 
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and outputs a Notice on click.
-- Registers a global interval which logs 'setInterval' to the console.
+## 全部功能一览
 
-## First time developing plugins?
+- 文件分类卡片（按 Vault 文件夹或 frontmatter tags）
+- 实时搜索（文件名 + 内容预览 + 标签，命中关键词高亮）
+- 置顶文件（持久化，⭐ 按钮悬停显示）
+- **拖拽排序置顶文件**
+- **双击置顶文件名内联重命名**
+- 标签云（frontmatter + 行内标签，点击筛选）
+- **Dataview 风格统计卡片**
+- **侧边栏 Tab（导航 + 统计双 Tab）**
+- 新建文件（弹窗选分类，自动写 frontmatter tags）
+- 深色/浅色主题完整适配
 
-Quick starting guide for new plugin devs:
+## 文件结构
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `src/main.ts` to `main.js`.
-- Make changes to `src/main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
-
-## Releasing new releases
-
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
-
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
-
-## Adding your plugin to the community plugin list
-
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-## How to use
-
-- Clone this repo.
-- Make sure your NodeJS is at least v18 (`node --version`).
-- `npm i` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
-
-## Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-## Improve code quality with eslint
-
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code.
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
-
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-	"fundingUrl": "https://buymeacoffee.com"
-}
+```
+obsidian-dashboard-v3/
+├── main.ts              # 全部逻辑（两个 ItemView + Modal + SettingTab）
+├── styles.css           # 主面板 + 侧边栏样式，含 dark theme 覆盖
+├── manifest.json
+├── package.json
+├── esbuild.config.mjs   # dev watch + production build
+└── tsconfig.json
 ```
 
-If you have multiple URLs, you can also do:
+## 快速安装
 
-```json
-{
-	"fundingUrl": {
-		"Buy Me a Coffee": "https://buymeacoffee.com",
-		"GitHub Sponsor": "https://github.com/sponsors",
-		"Patreon": "https://www.patreon.com/"
-	}
-}
+```bash
+# 1. 用官方脚手架初始化构建环境
+git clone https://github.com/obsidianmd/obsidian-sample-plugin
+cd obsidian-sample-plugin
+
+# 2. 覆盖本插件文件
+cp /下载路径/main.ts .
+cp /下载路径/styles.css .
+cp /下载路径/manifest.json .
+cp /下载路径/package.json .
+cp /下载路径/esbuild.config.mjs .
+cp /下载路径/tsconfig.json .
+
+# 3. 安装依赖 & 构建
+npm install
+npm run build      # 输出 main.js（生产）
+# 或
+npm run dev        # 监听模式，修改 main.ts 自动重编译
+
+# 4. 复制到 Vault
+mkdir -p <你的Vault>/.obsidian/plugins/obsidian-dashboard
+cp main.js manifest.json styles.css <你的Vault>/.obsidian/plugins/obsidian-dashboard/
+
+# 5. Obsidian → 设置 → 第三方插件 → 启用 Dashboard
 ```
 
-## API Documentation
+## 侧边栏 Tab 说明
 
-See https://docs.obsidian.md
+插件启动时自动在 **左侧边栏** 注册一个 Leaf。
+
+- **导航 Tab**：分类列表（含文件数徽章）→ 置顶文件快捷入口 → 高频标签 Top 15
+- **统计 Tab**：各分类文件数进度条 + KB 分布 + 近7/30天活跃 + 标签 Top 8 进度条
+
+手动打开命令：`Ctrl+P` → `打开仪表盘（侧边栏）`
+
+## Dataview 对比
+
+本插件统计数据基于 Obsidian 原生 API（`vault`、`metadataCache`），**不依赖 Dataview 插件**，开箱即用。
+
+若你已安装 Dataview，可在任意 `.md` 文件中叠加使用标准 Dataview 查询，两者互不干扰。
+
+## 分类识别规则
+
+优先级：
+1. 文件路径一级文件夹（`运营/周报.md` → 「运营」）
+2. frontmatter `tags` 字段中包含分类名
+
+默认分类：工作 / 学习 / 运营 / 日记，可在插件设置中自定义。
